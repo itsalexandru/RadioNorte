@@ -1,0 +1,221 @@
+/**
+ * Created by Vinicius on 06/02/2017.
+ */
+var Calendar = function (settings) {
+    "use strict";
+
+    this.lastMonday = new Date();
+    this.currentWeek = 0;
+    this.schedule = [];
+    this.moveByWeek = settings.moveByWeek;
+    this.minWeek = 0;
+    this.maxTimesToShow = 5;
+    this.maxWeek = settings.maxWeek * (this.moveByWeek ? 1 : 7);
+
+    var $calendar = $("#calendar"),
+        $calendarBody = $calendar.find("#calendar-body"),
+        $dayLabel = $calendar.find(".calendar-day-label"),
+        $weekDayName = $calendar.find(".calendar-week-day-name"),
+        $dayContent = $calendar.find(".calendar-day-content"),
+        $controls = $(".calendar-control"),
+        $headColumns = $calendar.find("thead").find("th"),
+        $bodyColumns = $calendar.find("tbody").first().find("td"),
+        width = $(window).width(),
+        isIFrame = (width <= 600 && width > 450),
+        isMobile = (width < 450),
+        weekDaysNumber = isMobile ? 2 : (isIFrame ? 3 : 7),
+        parent = this;
+
+    Date.prototype.addDays = function (days) {
+        var dat = new Date(this.valueOf());
+        dat.setDate(dat.getDate() + days);
+        return dat;
+    };
+
+    function formatDate(date, format) {
+        var year = date.getFullYear();
+        var month = (1 + date.getMonth()).toString();
+        month = month.length > 1 ? month : '0' + month;
+        var day = date.getDate().toString();
+        day = day.length > 1 ? day : '0' + day;
+        if (format === 'd/m/Y') {
+            return day + '/' + month + '/' + year;
+        } else {
+            return year + '-' + month + '-' + day;
+        }
+    }
+
+    $controls.on("click", function () {
+        var $btn = $(this),
+            action = $btn.attr("data-value");
+
+        if (parent.changeWeek(action)) {
+            parent.refetchCalendar();
+        }
+
+        $controls.filter("[data-value=" + (action * -1) + "]").attr("disabled", false);
+        if (parent.currentWeek === parent.minWeek || parent.currentWeek === parent.maxWeek) {
+            $controls.filter("[data-value=" + (action) + "]").attr("disabled", true);
+        }
+    });
+
+    this.changeWeek = function (n) {
+        n = parseInt(n);
+        var maxAchieved = !(this.currentWeek < this.maxWeek || (n < 0 && this.currentWeek === this.maxWeek)),
+            minAchieved = !(this.currentWeek > this.minWeek || (n > 0 && this.currentWeek === this.minWeek));
+
+        if (!maxAchieved && !minAchieved) {
+            this.currentWeek += n;
+            n = n * (this.moveByWeek ? 7 : 1);
+            this.lastMonday = this.lastMonday.addDays(n);
+
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    this.clear = function () {
+        $calendar.find(".calendar-day-content").html("");
+    };
+
+    this.resizeOnMobile = function () {
+        if (isMobile || isIFrame) {
+            for (var i = weekDaysNumber + 1; i <= 7; i++) {
+                $headColumns.filter(":eq(" + i + ")").css("display", "none");
+                $bodyColumns.filter(":eq(" + i + ")").css("display", "none");
+            }
+        }
+    };
+
+    this.refetchCalendar = function () {
+        this.fetchProfessionals();
+        this.resizeOnMobile();
+        this.fetchDaysLabels();
+        this.fetchSchedule();
+
+    };
+
+
+    this.fetchProfessionals = function () {
+        if (this.professionals && this.professionals.length > 0) {
+            var $content = $("#filtro-agenda-profissional"),
+                checked = parseInt($content.find("option:selected").attr("value")),
+                options = [],
+                optionsIndex = [];
+
+            $.each(this.professionals, function () {
+                optionsIndex.push(this.id);
+                options.push("<option value='" + this.id + "'>" + this.NomeProfissional + "</option>");
+            });
+            var selected = $content.val();
+
+            $content.html(options.join(""));
+
+            console.log(selected);
+            console.log(optionsIndex);
+            if(!inArray(selected, optionsIndex)){
+                $content.val(optionsIndex[0]).change();
+            }else{
+                $content.val(checked);
+            }
+        }
+    };
+
+    function inArray(neddle, haystack) {
+        var res = false;
+        for (var i = 0; i < haystack.length; i++) {
+            if (neddle == haystack[i]) {
+                res = true;
+            }
+        }
+        return res;
+    }
+
+    this.fetchSchedule = function () {
+        var dates = {};
+        this.clear();
+
+        if (typeof this.schedule === "object" && this.schedule !== null) {
+            $.each(this.schedule, function (locationIndex, locationSchedule) {
+                $.each(locationSchedule, function (professionalIndex, professionalSchedule) {
+                    $.each(professionalSchedule, function (date, times) {
+                        dates[date] = times;
+                        var index = $dayLabel.filter("[data-date='" + date + "']").attr("data-index");
+                        var $content = $dayContent.filter(":eq(" + index + ")"),
+                            content = getTable(date, times, locationIndex, professionalIndex);
+                        if ($content.html() !== "") {
+                            content = $content.html() + content;
+                        }
+                        $content.html(content);
+                    });
+                });
+            });
+        }
+        $.each($dayContent, function () {
+            var $content = $(this);
+            if ($content.html() === "") {
+                $content.html("Não há horários para esta data.");
+            }
+        });
+    };
+
+    var getTable = function (date, times, locationId, professionalId) {
+        var timesHtml = "",
+            hasSeeMoreButton = false;
+
+        if (typeof times == 'object') {
+            times = $.map(times, function (value, index) {
+                return [value];
+            });
+        }
+
+        for (var i = 0; i < times.length; i++) {
+            var hiddenOrNot = '';
+
+            if ((i >= parent.maxTimesToShow) && !isMobile && !isIFrame) {
+                hiddenOrNot = 'hidden';
+                hasSeeMoreButton = true;
+            }
+
+            timesHtml += "<tr class='" + hiddenOrNot + "'><td class='calendar-time step-control' data-value='1' data-location='" + locationId + "' data-professional='" + professionalId + "' data-time='" + date + ' ' + times[i] + "'>" + times[i].substr(0, 5) + "</td></tr>";
+        }
+        timesHtml += hasSeeMoreButton ? "<tr><td class='see-more-times'>Ver mais</td></tr>" : "";
+
+        var table = "<div class='" + ((isMobile || isIFrame) ? 'mobile-table' : '') + "'><table class='table table-bordered table-striped'>" +
+            "<tbody>" + timesHtml +
+            "</tbody>" +
+            "</table></div>";
+
+        if (timesHtml !== "") {
+            return table;
+        } else {
+            return "";
+        }
+    };
+
+    $dayContent.on("click", ".calendar-time", function () {
+        var $btn = $(this);
+        parent.onTimeSelect($btn.attr("data-time"), $btn.attr("data-location"), $btn.attr("data-professional"));
+    });
+
+    $dayContent.on("click", ".see-more-times", function () {
+        var $seeMore = $(this);
+        $seeMore.parents('.calendar-day-content').find('tr').removeClass('hidden');
+        $seeMore.parent('tr').remove();
+    });
+
+    function getWeekDayName(date) {
+        return ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][date.getDay()];
+    }
+
+    this.fetchDaysLabels = function () {
+        var date = this.lastMonday;
+
+        for (var day = 0; day < weekDaysNumber; day++) {
+            var newDate = date.addDays(day);
+            $dayLabel.filter(":eq(" + day + ")").html(formatDate(newDate, "d/m/Y")).attr('data-date', formatDate(newDate, "Y-m-d")).attr('data-index', day);
+            $weekDayName.filter(":eq(" + day + ")").html(getWeekDayName(newDate));
+        }
+    };
+};

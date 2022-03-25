@@ -1,0 +1,30 @@
+/**
+ * Created by Suporte on 22/02/2017.
+ */
+(function () {
+    "use strict";
+
+    var $filter = $(".filtro-agenda"),
+        $payment = $("input[name='formaPagamento']");
+
+    $("#filtro-agenda-profissional").change(function () {
+        $("#_profissional").val($(this).val());
+    });
+
+    $payment.change(function () {
+        var val = $(this).val(),
+            $content = $("#convenioContent"),
+            $ipt = $("#numeroCarteirinha");
+
+        if (val === "P") {
+            $content.find("select").attr("required",true);
+            $content.fadeIn();
+            // $ipt.focus();
+        } else {
+            $content.find("select").attr("required",false);
+            $content.fadeOut();
+        }
+    });
+
+    $filter.filter(":first").change();
+})();

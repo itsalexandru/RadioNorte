@@ -1,0 +1,51 @@
+.select2-container--default .select2-selection--single {
+    background-color: white !important;
+    border: 1px solid #dddddd !important;
+    -webkit-transition: border-color ease-in-out .15s;
+}
+
+.has-success .select2-container--default .select2-selection--single {
+    border-color: #93d789 !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.select2-container--default .select2-selection--single:focus {
+    border-color: #71aed7 !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.has-success .select2-container--default .select2-selection--single:focus {
+    border-color: #87c67e !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.has-error .select2-container--default .select2-selection--single {
+    border-color: #e67d6c !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.has-error .twitter-typeahead {
+    border-color: #e67d6c !important;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.select2 {
+    width: 100% !important;
+}
+
+.state-error{
+    display: block!important;
+    margin-top: 6px;
+    margin-bottom: 6px;
+    padding: 0 3px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-style: normal;
+    line-height: normal;
+    font-size: 0.85em;
+    color: #DE888A;
+}

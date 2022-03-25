@@ -1,0 +1,452 @@
+/**
+ * Created by Vinicius on 30/01/2017.
+ */
+var AgendamentoOnline = function (settings) {
+    "use strict";
+    this.ableToMoveOn = true;
+
+    var $main = $('#agendamento-online'),
+        $mainForm = $("#agendamento-online-form"),
+        $successScreen = $("#agendamento-online-sucesso"),
+        $formatedDate = $(".agendamento-online-data-formatada"),
+        $steps = $(".agendamento-online-passo"),
+        $firstScreen = $(".agendamento-online-tela-principal"),
+        stepControlSelector = ".step-control",
+        $filters = $(".filtro-agenda"),
+        $dateTimeInput = $("#_datahora"),
+        avaiableSchedule,
+        locations = [],
+        parent = this,
+        selectedTime,
+        currentStep = 0;
+
+
+    $mainForm.on("submit", function () {
+        var $form = $(this);
+
+        //request aqui aqui aqui aqui aqui aqui aqui
+
+        if (FieldValidator.isValidForm($form)) {
+
+            if(typeof templateOnSubmit === "function"){
+                templateOnSubmit($form);
+            }
+
+            $.ajax({
+                url: client + "/submit",
+                data: $form.serialize(),
+                method: "POST",
+                success: function (data) {
+                    // setTimeout(function () {
+                    // $successScreen.fadeOut(function () {
+                    //     FieldValidator.resetForm($("form"));
+                    // $firstScreen.fadeIn();
+                    // $mainForm.fadeOut();
+                    // location.reload();
+                    // $filters.trigger("change");
+                    // });
+                    // }, 3000);
+                    currentStep = 0;
+                    $mainForm.fadeOut(function () {
+                        $successScreen.fadeIn();
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    if(!jqXHR.responseJSON.agendar){
+                        alert(jqXHR.responseJSON.mensagem);
+                    }
+                }
+            });
+
+        }
+    });
+
+
+
+
+    Calendar.onTimeSelect = function (time, locationId, professionalId) {
+        selectedTime = time;
+        $dateTimeInput.val(selectedTime);
+        $("#_local").val(locationId);
+        $("#_profissional").val(professionalId);
+
+        setProcedures(professionalId, locationId);
+        setInsurances(professionalId, locationId);
+        setProcedurePrice(professionalId, locationId);
+
+        setFormatedDate(time);
+    };
+
+    function setProcedures(p, l) {
+
+        let datahora = $("#_datahora").val();
+        if (optionIsSet("Procedimento")) {
+            $.ajax({
+                url: client + "/getAllowedProcedures",
+                data: {p: p, l: l, t: datahora},
+                method: "GET",
+                success: function (data) {
+                    if (data) {
+                        var opts = ["<option value=''>Escolha o procedimento</option>"];
+                        data.forEach(function (d) {
+                            opts.push("<option value='" + d.id + "'>" + d.NomeProcedimento + "</option>");
+                        });
+                        $("#procedimento").html(opts);
+                    }
+                }
+            });
+        }
+    }
+
+    function setInsurances(p, l) {
+        let datahora = $("#_datahora").val();
+
+        if (optionIsSet("EscolherConvenio")) {
+
+            $.ajax({
+                url: client + "/getAllowedInsurances",
+                data: {p: p, l: l, t: datahora},
+                method: "GET",
+                success: function (data) {
+                    var $contentConvenio = $("#pagamento-convenio").parents(".radio-custom");
+
+                    if (data) {
+                        $contentConvenio.fadeIn();
+
+                        $(".rowPagamento").fadeIn();
+                        var opts = ["<option value=''>Selecione</option>"];
+                        data.forEach(function (d) {
+                            opts.push("<option value='" + d.id + "'>" + d.NomeConvenio + "</option>");
+                        });
+                        $("#nomeConvenio").html(opts);
+                    } else {
+                        $contentConvenio.fadeOut();
+                        $("#pagamento-particular").attr("checked", true);
+                    }
+                }
+            });
+
+            $("#nomeConvenio").change(function () {
+                $("#planoContent").fadeIn();
+                var convenio = $(this).val();
+                $("#nomePlano").val("").change();
+
+                $.ajax({
+                    url: client + "/getAllowedPlans",
+                    data: {I: convenio},
+                    method: "GET",
+                    success: function (data) {
+                        $contentConvenio.fadeIn();
+                        var opts = ["<option value=''>Selecione</option>"];
+                        data.forEach(function (d) {
+                            opts.push("<option value='" + d.id + "'>" + d.NomePlano + "</option>");
+                        });
+                        $("#nomePlano").html(opts);
+                    }
+                });
+            });
+        }
+    }
+
+    function setProcedurePrice(p, l,proc) {
+        var e = $("#_especialidade").val();
+
+        if (optionIsSet("ValorDoProcedimento")) {
+
+            $.ajax({
+                url: client + "/getProcedurePriceBySpecialty",
+                data: {p: p, l: l, e: e, proc: proc},
+                method: "GET",
+                success: function (data) {
+                    //console.log(data.valor);
+                    var valor = data.valor;
+
+                    if (!valor) {
+                        valor = "";
+                    } else {
+                        valor = "R$ " + valor;
+                    }
+
+                    $(".feegow-valor-consulta").html(valor);
+                }
+            });
+        }
+    }
+
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function formatDateYMD(date, format) {
+        var year = date.getFullYear();
+        var month = (1 + date.getMonth()).toString();
+        month = month.length > 1 ? month : '0' + month;
+        var day = date.getDate().toString();
+        day = day.length > 1 ? day : '0' + day;
+
+        var hour = date.getHours().toString();
+        hour = hour.length > 1 ? hour : '0' + hour;
+
+        var minutes = date.getMinutes().toString();
+        minutes = minutes.length > 1 ? minutes : '0' + minutes;
+
+        if (format === 'd/m/Y') {
+            return day + '/' + month + '/' + year;
+        } else if (format === 'd/m/Y H:i') {
+            return day + '/' + month + '/' + year + " - " + hour + ":" + minutes;
+        } else {
+            return year + '-' + month + '-' + day;
+        }
+    }
+
+
+    function setFormatedDate(dateTime) {
+        var isIphone = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        var D = new Date(dateTime);
+        if (isIphone) {
+            D = new Date(formatDateYMD(D, "d/m/Y"));
+        }
+
+        $formatedDate.html(longDate(D));
+    }
+
+    var longDate = function (date) {
+        var meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"],
+            semana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", 'Domingo'];
+
+        var dia = date.getDate(),
+            dias = date.getDay(),
+            mes = date.getMonth(),
+            ano = date.getYear(),
+            minutos = date.getMinutes().toString(),
+            horas = date.getHours().toString();
+
+
+        return semana[dias] + ", " + dia + " de " + meses[mes]
+            + " às " + (horas.length === 1 ? "0" + horas : horas) + ":" + (minutos.length === 1 ? "0" + minutos : minutos);
+    };
+
+    function getFilters() {
+        var obj = {};
+        $filters.each(function () {
+            var $filter = $(this),
+                name = $filter.attr("name"),
+                value = $filter.val();
+
+            if (value === "") {
+                // return false;
+            } else {
+                obj[name] = $filter.val();
+            }
+        });
+        if (settings.debug == 1) {
+            obj.debug = settings.debug;
+        }
+
+        return obj;
+    }
+
+    var $ready = $("#_ready");
+
+
+
+
+    $filters.on('change', function () {
+        var filters = getFilters();
+
+        $("body").addClass("loading");
+        if (!filters) {
+            Calendar.clear();
+        } else {
+            $.ajax({
+                url: settings.basePath + "index.php/agendamento-online/client/" + settings.clientName + "/filter-schedule",
+                data: filters,
+                success: function (response) {
+                    locations = response.locationsList;
+                    avaiableSchedule = response.avaiableSchedule;
+
+                    if (typeof returnObtained !== "undefined") {
+                        returnObtained();
+                    }
+                    Calendar.schedule = avaiableSchedule;
+                    Calendar.units = response.units;
+                    Calendar.allLocations = response.allLocations;
+                    Calendar.professionals = response.professionals;
+                    Calendar.refetchCalendar();
+                    setTimeout(function () {
+                        $("body").removeClass("loading");
+                        if ($ready) {
+                            $ready.change();
+                        }
+                        if (settings.defaultSpecialty) {
+                            $(".agendar-horario-btn").click();
+                        }
+                    }, 300);
+                }
+            });
+
+        }
+    });
+
+    // var recalcIdle = setInterval(function () {
+    //     $filters.trigger("change");
+    // }, 120000);
+
+    var validateRadios = function ($form) {
+        var $hidddenRadios = $form.find(":input:radio:hidden"),
+            isValid = true;
+
+        //required
+        $hidddenRadios.each(function () {
+            var $radio = $(this),
+                $label = $radio.parents("label"),
+                isLabelHidden = !$label.is(":visible"),
+                radioName = $radio.prop("name");
+
+            if (!isLabelHidden) {
+                if ($("input:radio").filter("[name='" + radioName + "']").filter(":checked").length <= 0) {
+                    $label.addClass("error-radio");
+                    isValid = false;
+                }
+            }
+        });
+
+        return isValid;
+    };
+
+    var bindSteps = function (toStep, callback) {
+        $steps.filter("[data-step=" + currentStep + "]").fadeOut(function () {
+            $steps.filter("[data-step=" + toStep + "]").fadeIn();
+            typeof callback === 'function' && callback();
+        });
+        currentStep = toStep;
+    };
+
+    $main.on('click', stepControlSelector, function () {
+        var $btn = $(this),
+            $form = $btn.parents("form"),
+            value = parseInt($btn.attr("data-value"));
+
+        setTimeout(function () {
+
+            validateRadios($form);
+
+            if (value === -1) {
+                bindSteps(currentStep + value);
+            } else if (parent.ableToMoveOn && FieldValidator.isValidForm($form) && validateRadios($form)) {
+                bindSteps(currentStep + value);
+            }
+
+        }, 10);
+    });
+
+    function optionIsSet($option) {
+        return inArray($option, settings.options);
+    }
+
+    function inArray(neddle, haystack) {
+        var res = false;
+        for (var i = 0; i < haystack.length; i++) {
+            if (neddle == haystack[i]) {
+                res = true;
+            }
+        }
+        return res;
+    }
+
+    function getAllowedDates() {
+        var allowedDates = [];
+        locations.forEach(function (locationId) {
+            if (!settings.sheduleByProfessional) {
+
+                for (var professional in avaiableSchedule[locationId]) {
+                    for (var date in avaiableSchedule[locationId][professional]) {
+                        allowedDates.push(date);
+                    }
+                }
+            }
+        });
+
+        return allowedDates;
+    }
+
+    function triggerDefaultSpecialty() {
+        if (settings.defaultSpecialty) {
+            setTimeout(function () {
+                $("#filtro-agenda-especialidade, #feegow-especialidades").val(settings.defaultSpecialty).trigger("change");
+            }, 300);
+        }
+    }
+
+    function verifyImage(image_url) {
+        if (image_url===null)
+            return image_url;
+
+        var urlnew = image_url.replace(/^.*[\\\/]/, '');
+
+        let serversToTry = [
+            "https://clinic7.feegow.com.br/uploads/"+config.LicencaID+"/Perfil/",
+            "https://clinic.feegow.com.br/uploads/"+config.LicencaID+"/Perfil/",
+            "https://clinic8.feegow.com.br/uploads/"+config.LicencaID+"/Perfil/"];
+        var retorno = null;
+
+        $.each(serversToTry, function (index,val) {
+            let url = val + urlnew;
+
+            $.ajax({
+                url: url,
+                async: false
+            }).done(function () {
+                retorno = url;
+
+            }).fail(function() {
+                retorno = null;
+            });
+        });
+
+        return retorno;
+    }
+
+    return {
+        setProcedurePrice: setProcedurePrice,
+        verifyImage:verifyImage
+    };
+};
+
+let steps = {
+    'especialidade': false,
+    'unidade': false,
+    'horario': false,
+    'paciente': false
+};
+
+const writeStep = (object) => {
+    steps = Object.assign({}, steps, object);
+};
+
+const checkSteps = () => {
+    let currentStep = event.target.getAttribute('step') ? event.target.getAttribute('step') : event.target.parentElement.getAttribute('step');
+    let position = event.target.getAttribute('data-value') ? event.target.getAttribute('data-value') : event.target.parentElement.getAttribute('data-value');
+
+    console.log(currentStep)
+    console.log(position)
+    if(currentStep != null && !steps[currentStep]) {
+        console.log("Step inválido")
+        document.getElementsByClassName('wizard-step-control-quick')[(position-1)].click();
+    }
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("Listener adicionado")
+    Array.from(document.getElementsByClassName('wizard-step-control-quick')).forEach((item) => {
+        item.addEventListener('click', checkSteps);
+    });
+});
+
