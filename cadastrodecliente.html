@@ -1,0 +1,67 @@
+<html lang="pt-br>
+	<head>
+		<meta charset="utf-8">
+		<title>Cadastro</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="icons/styles.css">
+		<link rel="stylesheet" href="css/bootstrap-custom.css">
+		<link rel="stylesheet" href="css/registration-form.css">
+		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,600' rel='stylesheet' type='text/css'>
+    <link href="css/stylecadastro.css" rel="stylesheet">
+    <link href="js/stylecadastro.js" rel="stylesheet>
+	</head>
+	<body>
+		<div class="form-wrapper"> 
+			<form action="#non" method="post" class="fcorn-register container">
+				<p class="register-info">Atenção: todos os campos devem ser preenchidos obrigatoriamente</p>
+				<div class="row">
+					<p class="col-md-6"><input type="text" placeholder="Nome" required></p>
+					<p class="col-md-6"><input type="text" placeholder="Sobrenome" required></p>
+				</div>
+				<p><input type="" placeholder="E-mail" required>
+				   <span class="extern-type">Gmail, Outlook/Hotmail</span>
+				</p>
+				<p><input type="number" placeholder="Senha" required>
+					<span class="extern-type">No mínimo 8 dígitos</span>
+				</p>
+				<p><input type="number" placeholder="Confirmar Senha" required></p>
+				<div class="row">
+					<p class="col-md-4"><input type="date" placeholder="Data" required></p>
+					<p class="col-md-4"><input type="date" placeholder="Mês" required></p>
+					<p class="col-md-4"><input type="date" placeholder="Ano" required></p>
+          <p class="col-md-12"><input type="text" placeholder="Acompanhante"><span class="extern-type"><strong>Em caso de menores de idade, idosos ou pessoas com deficiencia, deve preencher aqui com o nome do acompanhante. </strong></span></p>
+				</div>
+				<div class="row">
+					<p class="col-md-6">
+						<select>
+							<option value="0" selected>Cidade</option>
+							<option value="1">Manaus</option>
+						</select>
+					</p>
+					<p class="col-md-6">
+						<select>
+							<option value="0" selected>País</option>
+							<option value="1">Brasil</option>
+							<option value="2">Estados Unidos</option>
+						</select>
+					</p>
+          <div> 
+            <p class="col-xs-12"><form action="upload.php" method="post" enctype="multipart/form-data">
+           Anexe aqui o seu exame.
+              <input type="file" name="fileToUpload" id="fileToUpload">
+              <input type="submit" value="Enviar imagem" name="submit" required>
+           </p>
+				</div>
+          <br/>
+				<p class="cadastro-toggle">
+					<label for="cadastro-agree" class="toggle-label" data-on="S" data-off="NÃO">
+						<input type="checkbox" id="register-agree" class="toggle-input">
+						<span class="toggle-handle"></span>
+					</label>
+					<span class="info">Estou de acordo com os <a href="#">termos e condições?</a></span>
+				</p>
+				<p class="cadastro-submit"><input type="submit" value="Concluído!"></p>
+			</form>
+    </div>
+</html>
+  </body>

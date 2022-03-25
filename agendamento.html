@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns="http://www.w3.org/1999/html">
+<head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Agendamento Online</title>
+    <link rel="stylesheet" href="./agendamento_files/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="./agendamento_files/carousel.css">
+    <link rel="stylesheet" type="text/css" href="./agendamento_files/theme.css">
+    <meta name="theme-color" content="#fff">
+    <link rel="stylesheet" href="./agendamento_files/template-1.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./agendamento_files/default.css">
+    <link href="./agendamento_files/core.css" rel="stylesheet" type="text/css">
+    <link href="./agendamento_files/field-validator.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/agendamento.css">
+
+    <script type="text/javascript" charset="UTF-8" src="./agendamento_files/jquery-3.1.1.min.js.download"></script>
+    <script type="text/javascript" charset="UTF-8" src="./agendamento_files/jquery-ui.min.js.download"></script>
+    <script type="text/javascript" charset="UTF-8" src="./agendamento_files/jquery.mask.min.js.download"></script>
+    <script src="./agendamento_files/select2.min.js.download"></script>
+    <script type="text/javascript" charset="UTF-8" src="./agendamento_files/agendamento-online-0.0.1.js.download"></script>
+    <script type="text/javascript" charset="UTF-8" src="./agendamento_files/calendar.js.download"></script>
+    <script type="text/javascript" charset="UTF-8" src="./agendamento_files/field-validator.js.download"></script>
+    <script src="./agendamento_files/typeahead.bundle.js.download"></script>
+    <script type="text/javascript" charset="UTF-8" src="./agendamento_files/bootstrap.min.js.download"></script>
+    
+    <link href="css/style.css" rel="stylesheet">
+    </head>
+<body>
+
+        <header id="header"style="background-color: #8a8585 !important;">
+                <div class="container-fluid">
+            
+                  <div id="logo" class="pull-left"> 
+                    <h1><a href="index.html" class="scrollto">RadioNorte</a></h1>
+                
+                  </div>
+            
+                  <nav id="nav-menu-container">
+                    <ul class="nav-menu">
+                      <li class="menu-active"><a href="index.html">Início</a></li>
+                      
+                  </nav>
+                </div>
+              </header>
+         
+<div>
+    <br><br>
+    <br><br><br>
+</div>
+<div>
+    <br>
+</div>
+<input type="hidden" id="_client" value="5529730-AAAW">
+<div id="agendamento-online" class="container-fluid">
+<div id="agendamento-online-horario" class="agendamento-online-passo row agendamento-online-tela-principal" data-step="0">
+<div class="filter">
+            <input type="hidden" name="filter-by">
+            <label for="filtro-agenda-profissional">Serviços</label>
+            <select required="" name="PorProfissional" id="filtro-agenda-profissional" class="form-control agendamento-online-campo filtro-agenda" tabindex="-1" style="display: none;"><option value="18">DENSITOMETRIA ÓSSEA</option><option value="11">MAMOGRAFIA DIGITAL</option><option value="24">RAIOS-X SIMPLES E CONTRASTADOS</option><option value="26">RESSONÂNCIA MAGNÉTICA</option><option value="25">TOMOGRAFIA COMPUTADORIZADA</option><option value="23">ULTRASSONOGRAFIA / DOPPLER</option><option value="21">ANGIO-TOMOGRAFIA CARDÍACA OU ANGIO TC DE CORONÁRIAS</option><option value="12">ECOCARDIOGRAMA TRANSTORÁCICO</option><option value="20">ELETROCARDIOGRAMA</option><option value="13">RESSONÂNCIA MAGNÉTICA CARDÍACA</option><option value="29">TESTE ERGOMÉTRICO</option><option value="11">ESPIROMETRIA</option><option value="11">MAPEAMENTO CEREBRAL</option><option value="11">CÁPSULA ENDOSCÓPICA</option><option value="11">VIDEOFLUOROSCOPIA</option><option value="11">BIÓPSIA DE PRÓSTATA</option><option value="11">BIÓPSIA MAMÁRIA</option><option value="11">DUCTOGRAFIA MAMÁRIA</option><option value="11">ESTEREOTAXIA MAMÁRIA</option><option value="11">PUNÇÃO ASPIRATIVA POR AGULHA FINA (MAMA)</option><option value="11">PUNÇÃO ASPIRATIVA POR AGULHA FINA (TIREÓIDE)</option><option value="11">CINTILOGRAFIA</option><option value="11">PET/CT</option><option value="11">AUDIOMETRIA</option><option value="11">AVALIAÇÃO PSICOLÓGICA</option><option value="11">ELETROCARDIOGRAMA</option><option value="11">ELETROENCEFALOGRAMA</option><option value="11">ULTRASSONOGRAFIA DE ARTICULAÇÕES</option><option value="11">RAIOS-X GERAL (COLUNA / TORAX, ETC)</option></select>
+        </div>
+
+	
+        <div class="filter">
+            <input type="hidden" name="filter-by">
+            <label for="filtro-agenda-profissional">Clinicas</label>
+            <select required="" name="PorProfissional" id="filtro-agenda-profissional" class="form-control agendamento-online-campo filtro-agenda" tabindex="-1" style="display: none;"><option value="18">MAGSCAN</option><option value="18">PRODIMAGEM</option><option value="18">IMAGEMCEF</option>
+			</option></select>
+        </div>
+        <div class="col-md-12">
+            Escolha um horário abaixo: <br>
+        </div>
+        <div class="col-md-12 col-xs-12 fix" id="agendamento-online-horarios"><style>
+    #calendar th, #calendar td {
+        text-align: center;
+    }
+
+    .calendar-day-content td {
+        cursor: pointer;
+    }
+
+    .calendar-day-content td:hover {
+        background-color: #eeeeee !important;
+            color: #666666;
+    }
+
+    .mobile-table {
+        max-height: 250px;
+
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+</style>
+<table class="table table-bordered" id="calendar">
+    <thead>
+    <tr>
+        <th class="arrow">
+            <button class="btn btn-xs btn-default calendar-control" disabled="" data-value="-1"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+        </th>
+        <th>
+            <span class="calendar-week-day-name">Domingo</span>
+            <br><span class="calendar-day-label" data-date="2019-11-10" data-index="0">10/11/2019</span>
+        </th>
+        <th>
+            <span class="calendar-week-day-name">Segunda</span>
+            <br><span class="calendar-day-label" data-date="2019-11-11" data-index="1">11/11/2019</span>
+        </th>
+        <th>
+            <span class="calendar-week-day-name">Terça</span>
+            <br><span class="calendar-day-label" data-date="2019-11-12" data-index="2">12/11/2019</span>
+        </th>
+        <th>
+            <span class="calendar-week-day-name">Quarta</span>
+            <br><span class="calendar-day-label" data-date="2019-11-13" data-index="3">13/11/2019</span>
+        </th>
+        <th>
+            <span class="calendar-week-day-name">Quinta</span>
+            <br><span class="calendar-day-label" data-date="2019-11-14" data-index="4">14/11/2019</span>
+        </th>
+        <th>
+            <span class="calendar-week-day-name">Sexta</span>
+            <br><span class="calendar-day-label" data-date="2019-11-15" data-index="5">15/11/2019</span>
+        </th>
+        <th>
+            <span class="calendar-week-day-name">Sábado</span>
+            <br><span class="calendar-day-label" data-date="2019-11-16" data-index="6">16/11/2019</span>
+        </th>
+        <th class="arrow">
+            <button class="btn btn-xs btn-default calendar-control" data-value="1"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr id="calendar-body">
+        <td></td>
+        <td class="calendar-day-content">Nao ha horarios para esta data.</td>
+        <td class="calendar-day-content"><div class=""><table class="table table-bordered table-striped"><tbody><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-11 15:00:00">15:00</td></tr></tbody></table></div></td>
+        <td class="calendar-day-content"><div class=""><table class="table table-bordered table-striped"><tbody><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-12 09:20:00">09:20</td></tr><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-12 15:00:00">15:00</td></tr></tbody></table></div></td>
+        <td class="calendar-day-content"><div class=""><table class="table table-bordered table-striped"><tbody><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-13 09:20:00">09:20</td></tr><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-13 15:00:00">15:00</td></tr></tbody></table></div></td>
+        <td class="calendar-day-content"><div class=""><table class="table table-bordered table-striped"><tbody><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-14 09:20:00">09:20</td></tr><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-14 15:00:00">15:00</td></tr></tbody></table></div></td>
+        <td class="calendar-day-content"><div class=""><table class="table table-bordered table-striped"><tbody><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-15 09:20:00">09:20</td></tr><tr class=""><td class="calendar-time step-control" data-value="1" data-location="0" data-professional="21" data-time="2019-11-15 15:00:00">15:00</td></tr></tbody></table></div></td>
+        <td class="calendar-day-content">Nao ha horarios para esta data.</td>
+        <td></td>
+    </tr>
+    </tbody>
+</table></div>
+    </div>
+    <div class="agendamento-online-passo" data-step="1" style="display: none;">
+        <div class="container">
+            <form id="agendamento-online-form" onsubmit=" false" novalidate="">
+                                <input type="hidden" name="ci_csrf_token" value="">
+                <input type="hidden" name="datahora" id="_datahora" value="2019-11-13 09:20:00">
+                <input type="hidden" name="profissional" id="_profissional" value="21">
+                <input type="hidden" name="local" id="_local" value="0">
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <button class="btn btn-default btn-xs step-control" type="button" data-value="-1">Voltar
+                        </button>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 15px">
+                    <div class="col-md-12 ">
+                        <div class="label label-primary">Agendamento para <span class="agendamento-online-data-formatada">Quarta-feira, 13 de Novembro às 09:20</span></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="pessoa-nome" class="control-label">Nome</label>
+                            <input id="pessoa-nome" required="" type="text" name="nome" placeholder="Digite seu nome " class="form-control agendamento-online-campo">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-xs-6">
+                        <div class="form-group">
+                            <label for="pessoa-email" class="control-label">E-mail</label>
+                            <input required="" type="email" id="pessoa-email" name="email" class="form-control agendamento-online-campo" placeholder="Digite seu e-mail">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xs-6">
+                        <div class="form-group">
+                            <label for="pessoa-celular" class="control-label">Celular</label>
+                            <input required="" type="tel" id="pessoa-celular" name="celular" class="form-control agendamento-online-campo phone" placeholder="Seu celular com DDD" maxlength="15" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="pessoa-cpf" class="control-label">CPF</label>
+                            <input required="" type="text" name="cpf" class="form-control cpf" placeholder="Digite seu cpf" id="pessoa-cpf" maxlength="14" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        </div>
+                    </div>-
+                                            <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="data-nascimento" class="control-label">Data de nascimento</label>
+                                <input id="data-nascimento" required="" type="text" name="nascimento" placeholder="Digite sua data de nascimento" class="form-control agendamento-online-campo date" maxlength="10" autocomplete="off">
+                            </div>
+                        </div>
+                                        </div>
+                                <div class="row">
+                                        <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label" for="obs">Observações</label>
+                            <textarea name="obs" id="obs" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <br>
+                        <button class="btn btn-block btn-primary">Agendar agora</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="agendamento-online-sucesso" class="col-md-12" style="display: none;">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-success"><strong>Sucesso!</strong> Seu agendamento na <span class="agendamento-online-data-formatada">Quarta-feira, 13 de Novembro às 09:20</span> foi concluido com sucesso.
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<script type="text/javascript">
+    var client = $("#_client").val(),
+        $filter = $("#filtro-agenda"),
+        Calendar = new Calendar({
+            maxWeek: (parseInt("5") - 1),
+            moveByWeek: false,
+            hideTimes: false,
+        }),
+        FieldValidator = new FieldValidator(),
+        AgendamentoOnline = new AgendamentoOnline({
+            sheduleByProfessional: false,
+            basePath: "/feegow_components/",
+            clientName: "5529730-AAAW",
+            defaultSpecialty: "",
+            options: JSON.parse('["Serviços"]'),
+            debug: ''
+        });
+</script>
+<script type="text/javascript" src="./agendamento_files/template-1.js.download"></script>
+
+</body>
+</html>
